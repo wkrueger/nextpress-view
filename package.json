@@ -1,0 +1,21 @@
+{
+  "name": "@proerd/nextpress-view",
+  "version": "0.1.1",
+  "main": "build/index.js",
+  "typings": "build/index.d.ts",
+  "devDependencies": {
+    "@types/express": "^4.17.2",
+    "@types/yup": "^0.26.32",
+    "typescript": "^3.8.2"
+  },
+  "peerDependencies": {
+    "express": "^4.17.1"
+  },
+  "dependencies": {
+    "yup": "^0.28.1"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepublish": "tsc"
+  }
+}
