@@ -1,5 +1,9 @@
-namespace Nextpress {
-  export interface Context {}
+declare global {
+  namespace Nextpress {
+    export interface Context {}
 
-  export interface ExtraRouteArgs {}
+    export interface ExtraRouteArgs {}
+  }
 }
+
+export const dummy = {};

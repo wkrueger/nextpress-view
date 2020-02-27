@@ -9,7 +9,8 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "sourceMap": true,
-    "declaration": true
+    "declaration": true,
+    "pretty": false
   },
   "include": ["src"]
 }

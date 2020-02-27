@@ -13,10 +13,16 @@ export type SchemaDict = {
 
 export interface RouteOpts {
   __tag__?: "routeopts";
+  /** defaults to POST */
   method?: string;
+  /** run pre-middleware. Can be ordered through the "priority" property */
   middleware?: PriorityRequestHandler[];
+  /** apply input validation */
   validation?: SchemaDict;
+  /** metadata for schema generators */
+  responseType?: { type: "json"; schema: yup.ObjectSchema<any> };
   handler?: Function;
+  /** enabled by default, set false to disable */
   withTransaction?: boolean;
 }
 

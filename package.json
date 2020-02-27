@@ -12,6 +12,7 @@
     "express": "^4.17.1"
   },
   "dependencies": {
+    "lodash.camelcase": "^4.3.0",
     "yup": "^0.28.1"
   },
   "scripts": {
