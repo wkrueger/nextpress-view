@@ -1,7 +1,11 @@
-import { _mapValues } from "../other/hidash";
+import { _mapValues, _inverse } from "../other/hidash";
 import * as yup from "yup";
 
 export class YupToJsonSchema {
+  isClass(value: any, which: keyof YupToJsonSchema["yupClasses"]) {
+    return value instanceof this.yupClasses[which];
+  }
+
   yupClasses = {
     String: yup.string().constructor,
     Number: yup.number().constructor,
@@ -14,11 +18,10 @@ export class YupToJsonSchema {
   run(_inp: any) {
     if (!_inp) return;
     const nullable = _inp.isValidSync(null) || undefined;
-    const yupClasses = this.yupClasses;
     //TODO substituir IFs por um MAP
-    if (_inp instanceof yupClasses.Object) {
+    if (this.isClass(_inp, "Object")) {
       const inp: any = _inp;
-      const properties = _mapValues(inp.fields || {}, v => {
+      const properties = _mapValues(inp.fields || {}, (k, v) => {
         return this.run(v);
       });
       const keys = Object.keys(properties);
@@ -33,29 +36,29 @@ export class YupToJsonSchema {
         required: required.length ? required : undefined,
         nullable
       };
-    } else if (_inp instanceof yupClasses.Number) {
+    } else if (this.isClass(_inp, "Number")) {
       return {
         type: "number",
         nullable
       };
-    } else if (_inp instanceof yupClasses.String) {
+    } else if (this.isClass(_inp, "String")) {
       return {
         type: "string",
         nullable
       };
-    } else if (_inp instanceof yupClasses.Array) {
+    } else if (this.isClass(_inp, "Array")) {
       const inp = _inp as any;
       const items = this.run(inp._subType || yup.string);
       return {
         type: "array",
         items
       };
-    } else if (_inp instanceof yupClasses.Mixed) {
+    } else if (this.isClass(_inp, "Mixed")) {
       return {
         type: "object",
         nullable
       };
-    } else if (_inp instanceof yupClasses.Boolean) {
+    } else if (this.isClass(_inp, "Boolean")) {
       return {
         type: "boolean",
         nullable

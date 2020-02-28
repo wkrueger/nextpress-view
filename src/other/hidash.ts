@@ -25,3 +25,11 @@ export function _camelCase(str: string) {
   const cc = require("lodash.camelcase");
   return cc(str);
 }
+
+export function _inverse(inp: any) {
+  const out = {} as any;
+  Object.entries(inp).forEach(([k, v]: [any, any]) => {
+    out[v] = k;
+  });
+  return out;
+}

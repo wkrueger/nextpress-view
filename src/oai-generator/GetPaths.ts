@@ -13,13 +13,16 @@ export class GetPaths {
 
   getTags(groups: RouteDict) {
     const tagsMapping = {} as Record<string, string>;
-    const tags: { name: string }[] = Object.keys(groups).map(tag => {
-      const srcpath = tag;
-      if (tag.startsWith("/")) tag = tag.substr(1);
-      tag = tag.replace(/\//g, "_");
-      tagsMapping[srcpath] = tag;
-      return { name: tag };
-    });
+    const tags: { name: string }[] = Object.keys(groups)
+      .map(tag => {
+        if (tag.startsWith("__")) return null as never;
+        const srcpath = tag;
+        if (tag.startsWith("/")) tag = tag.substr(1);
+        tag = tag.replace(/\//g, "_");
+        tagsMapping[srcpath] = tag;
+        return { name: tag };
+      })
+      .filter(Boolean);
     return { tagsMapping, tags };
   }
 
@@ -34,7 +37,7 @@ export class GetPaths {
         const methods: Record<string, any> = {};
         group.forEach(([_path, routeOpts]) => {
           const methodStr = (routeOpts.method || "post").toLowerCase();
-          const schemas = _mapValues(routeOpts.validation || {}, value => {
+          const schemas = _mapValues(routeOpts.validation || {}, (_, value) => {
             return this.yupToJsonSchema.run(value);
           });
           const parameters = [] as any;

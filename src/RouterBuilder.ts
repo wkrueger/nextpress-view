@@ -64,7 +64,10 @@ export class RouterBuilder {
   transactionable?: Transactionable;
 
   routeDict(i: RouteDict): RouteDictTagged {
-    (i as any).__tag__ = "routedict";
+    Object.defineProperty(i as any, "__tag__", {
+      value: "routedict",
+      enumerable: false
+    });
     return i as any;
   }
 
@@ -139,10 +142,15 @@ export class RouterBuilder {
     Object.keys(dict).forEach(key => {
       if (key === "__tag__") return;
       let routeOpts = dict[key];
-      let method: "get" | "post" | "put" | "delete" =
-        routeOpts.method || ("post" as any);
-      const { middleware, handler } = this.getHandler(routeOpts);
-      router[method](key, ...middleware, handler);
+      if (routeOpts.__tag__ === "routedict") {
+        const inner = express.Router();
+        this.appendRouteDict(inner, routeOpts as RouteDictTagged);
+        router.use(key, inner);
+      } else {
+        let method = String(routeOpts.method || "post").toLowerCase() as any;
+        const { middleware, handler } = this.getHandler(routeOpts);
+        router[method](key, ...middleware, handler);
+      }
     });
   }
 }
